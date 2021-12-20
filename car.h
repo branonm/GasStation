@@ -4,15 +4,18 @@
 #include "station.h"
 
 #include <memory>
-class Station;
-class Car {
 
+// Forward declaration
+class Station;
+
+// A Car is an abstraction for a motor vehicle
+class Car {
 private:
     int _fillUps = 0;
 
 public:
     Car();
-    Car(const Car&) noexcept;
+
     void Fill(Station*);
     int FillUps();
 };

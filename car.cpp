@@ -2,13 +2,16 @@
 
 #include <thread>
 
+/**
+ * Constructor
+ */
 Car::Car(){
 
 }
-Car::Car(const Car &car) noexcept{
-    _fillUps = car._fillUps;
-}
-
+/**
+ * Fills a Car
+ * @param Station* pointer to the station that will fill the car
+ */
 void Car::Fill(Station *station) {
     bool filled = false;
     while(!filled) {
@@ -16,7 +19,7 @@ void Car::Fill(Station *station) {
             if (station->pumpMutexes[x].try_lock()) {
                 std::this_thread::sleep_for(std::chrono::microseconds(30));
                 _fillUps++;
-                station->fills[x]++;
+                station->IncrementFills(x);
                 filled = true;
                 station->pumpMutexes[x].unlock();
                 station->Requeue(this);
@@ -27,6 +30,9 @@ void Car::Fill(Station *station) {
     }
 }
 
+/**
+ * Retrieves the number of times a car is filled
+  */
 int Car::FillUps() {
     return _fillUps;
 }
