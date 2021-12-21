@@ -12,12 +12,12 @@ Car::Car(){
  * Fills a Car
  * @param Station* pointer to the station that will fill the car
  */
-void Car::Fill(Station *station) {
+bool Car::Fill(Station *station) {
     bool filled = false;
     while(!filled) {
         for (int x = 0; x < 2; x++) {
             if (station->pumpMutexes[x].try_lock()) {
-                std::this_thread::sleep_for(std::chrono::microseconds(30));
+                std::this_thread::sleep_for(std::chrono::milliseconds(30));
                 _fillUps++;
                 station->IncrementFills(x);
                 filled = true;
@@ -28,6 +28,7 @@ void Car::Fill(Station *station) {
             }
         }
     }
+    return true;
 }
 
 /**

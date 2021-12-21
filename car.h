@@ -16,7 +16,7 @@ private:
 public:
     Car();
 
-    void Fill(Station*);
+    bool Fill(Station*);
     int FillUps();
 };
 

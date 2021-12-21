@@ -1,4 +1,6 @@
 #include "station.h"
+#include "thread_pool.h"
+
 #include <thread>
 
 /**
@@ -14,18 +16,23 @@ Station::Station() {
  * Fill cars.
  */
 void Station::DoFill() {
+    thread_pool pool;
     this->_doFill = true;
     while (this->_doFill) {
         if (!_carQueue.empty()) {
             Car *car;
-            _carQueue.try_pop(car);
-            std::thread t(&Car::Fill, car, this);
-            t.detach();
+            if (_carQueue.try_pop(car)) {
+                auto funct = std::bind(&Car::Fill, car, this);
+                pool.push_task(funct);
+               // std::thread t(&Car::Fill, car, this);
+                //t.detach();
+            }
         } else {
             std::unique_lock<std::mutex> lk(_quetex);
             _cv.wait(lk);
         }
     }
+
 }
 
 /**
